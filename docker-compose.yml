@@ -1,0 +1,76 @@
+services:
+  # ==========================================
+  # FUENTE A: Base de Datos Relacional (PostgreSQL)
+  # ==========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_fuente_a
+    environment:
+      POSTGRES_USER: presto_user
+      POSTGRES_PASSWORD: presto_password
+      POSTGRES_DB: ecommercedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - presto-cluster-net
+
+  # ==========================================
+  # MOTOR PRESTO: Coordinator (El cerebro)
+  # ==========================================
+  presto-coordinator:
+    image: prestodb/presto:latest
+    container_name: presto_coordinator
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mapeamos la configuración y los catálogos (.properties)
+      - ./presto_coordinator_etc:/opt/presto-server/etc
+      # Mapeamos la carpeta del Data Lake para que pueda leer los Parquet
+      - ./data_lake:/var/presto/data_lake
+    command: ["/opt/presto-server/bin/launcher", "run"]
+    networks:
+      - presto-cluster-net
+    depends_on:
+      - postgres
+
+  # ==========================================
+  # MOTOR PRESTO: Worker 1 (Fuerza de trabajo)
+  # ==========================================
+  presto-worker-1:
+    image: prestodb/presto:latest
+    container_name: presto_worker_1
+    volumes:
+      - ./presto_worker_1_etc:/opt/presto-server/etc
+      - ./data_lake:/var/presto/data_lake
+    command: ["/opt/presto-server/bin/launcher", "run"]
+    networks:
+      - presto-cluster-net
+    depends_on:
+      - presto-coordinator
+
+  # ==========================================
+  # MOTOR PRESTO: Worker 2 (Fuerza de trabajo)
+  # ==========================================
+  presto-worker-2:
+    image: prestodb/presto:latest
+    container_name: presto_worker_2
+    volumes:
+      - ./presto_worker_2_etc:/opt/presto-server/etc
+      - ./data_lake:/var/presto/data_lake
+    command: ["/opt/presto-server/bin/launcher", "run"]
+    networks:
+      - presto-cluster-net
+    depends_on:
+      - presto-coordinator
+
+# ==========================================
+# Redes y Volúmenes Persistentes
+# ==========================================
+networks:
+  presto-cluster-net:
+    driver: bridge
+
+volumes:
+  pgdata:
