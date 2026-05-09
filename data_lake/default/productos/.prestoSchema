@@ -1,0 +1,35 @@
+{
+  "owner" : "root",
+  "tableType" : "EXTERNAL_TABLE",
+  "dataColumns" : [ {
+    "name" : "id_producto",
+    "type" : "int"
+  }, {
+    "name" : "categoria",
+    "type" : "string"
+  }, {
+    "name" : "marca",
+    "type" : "string"
+  } ],
+  "partitionColumns" : [ ],
+  "parameters" : {
+    "presto_version" : "0.297-6c8e90a",
+    "presto_query_id" : "20260507_202219_00002_cybnm",
+    "EXTERNAL" : "TRUE",
+    "numFiles" : "0",
+    "numRows" : "0",
+    "rawDataSize" : "0",
+    "totalSize" : "0"
+  },
+  "storageFormat" : {
+    "serDe" : "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+    "inputFormat" : "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+    "outputFormat" : "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+  },
+  "storageParameters" : {
+    "preferred_ordering_columns" : ""
+  },
+  "serdeParameters" : { },
+  "externalLocation" : "file:/var/presto/data_lake/productos",
+  "columnStatistics" : { }
+}
