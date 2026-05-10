@@ -55,6 +55,21 @@ Debe listar 2 nodos worker.
 ```bash
 docker-compose logs --no-color --timestamps --tail=200 presto-coordinator presto-worker-1 presto-worker-2
 ```
+## Consultas Federadas
+
+Ejemplo de consulta federada:
+
+```sql
+SELECT 
+    p.categoria,
+    SUM(v.cantidad) AS total_unidades_vendidas,
+    ROUND(SUM(v.precio_total),2) AS ingresos_totales
+FROM postgresql.public.ventas v
+JOIN hive.default.productos_v2 p 
+    ON v.id_producto = p.id_producto
+GROUP BY p.categoria
+ORDER BY ingresos_totales DESC;
+```
 
 ## Apagar stack
 ```bash
