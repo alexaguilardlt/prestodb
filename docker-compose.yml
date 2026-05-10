@@ -23,7 +23,7 @@ services:
     image: prestodb/presto:latest
     container_name: presto_coordinator
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       # Mapeamos la configuración y los catálogos (.properties)
       - ./presto_coordinator_etc:/opt/presto-server/etc
